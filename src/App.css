@@ -1,0 +1,137 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #b2f8fd;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.App {
+  width: 100%;
+
+  margin: 0 auto;
+  padding-top: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #c7c6c6;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #232424;
+  color: #fff;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+td {
+  font-size: 14px;
+  color: #333;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.actions button:hover {
+  opacity: 0.7;
+}
+
+.MuiAppBar-root {
+  background-color: #232424 !important;
+}
+
+.MuiTab-root {
+  color: #fff !important;
+}
+
+.MuiTab-root.Mui-selected {
+  color: #232424 !important;
+  background-color: #fff !important;
+}
+
+.MuiTabs-indicator {
+  background-color: #fff !important;
+}
+
+form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+form div {
+  margin-bottom: 15px;
+}
+
+form input {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+form input:focus {
+  border-color: #232424;
+  outline: none;
+}
+
+form button {
+  background-color: #232424;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #232424;
+}
+
+button.MuiButton-containedPrimary {
+  background-color: #232424 !important;
+  color: #fff !important;
+}
+
+button.MuiButton-containedPrimary:hover {
+  background-color: #232424 !important;
+}
