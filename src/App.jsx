@@ -13,6 +13,9 @@ function App() {
   const [editCustomer, setEditCustomer] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
+  const expressBaseUrl = import.meta.env.VITE_URL_EXPRESS;
+  const nestBaseUrl = import.meta.env.VITE_URL_NEST;
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
     setEditCustomer(null);
@@ -21,10 +24,11 @@ function App() {
 
   const fetchCustomers = async () => {
     try {
+      const baseUrl = value === 0 ? expressBaseUrl : nestBaseUrl;
       const response =
         value === 0
-          ? await expressService.getCustomers()
-          : await nestService.getCustomers();
+          ? await expressService.getCustomers(baseUrl)
+          : await nestService.getCustomers(baseUrl);
       setCustomers(response.data);
       console.log(response.data); // Correct results from API call
     } catch (error) {
@@ -43,10 +47,11 @@ function App() {
 
   const handleDelete = async (id) => {
     try {
+      const baseUrl = value === 0 ? expressBaseUrl : nestBaseUrl;
       if (value === 0) {
-        await expressService.deleteCustomer(id);
+        await expressService.deleteCustomer(baseUrl, id);
       } else {
-        await nestService.deleteCustomer(id);
+        await nestService.deleteCustomer(baseUrl, id);
       }
       fetchCustomers();
     } catch (error) {
@@ -56,17 +61,18 @@ function App() {
 
   const handleSubmit = async (values) => {
     try {
+      const baseUrl = value === 0 ? expressBaseUrl : nestBaseUrl;
       if (editCustomer) {
         if (value === 0) {
-          await expressService.updateCustomer(editCustomer.no, values);
+          await expressService.updateCustomer(baseUrl, editCustomer.no, values);
         } else {
-          await nestService.updateCustomer(editCustomer.no, values);
+          await nestService.updateCustomer(baseUrl, editCustomer.no, values);
         }
       } else {
         if (value === 0) {
-          await expressService.addCustomer(values);
+          await expressService.addCustomer(baseUrl, values);
         } else {
-          await nestService.addCustomer(values);
+          await nestService.addCustomer(baseUrl, values);
         }
       }
       setShowForm(false);
@@ -77,7 +83,6 @@ function App() {
     }
   };
 
-  // New function to handle closing the form and resetting states
   const handleCloseForm = () => {
     setShowForm(false);
     setEditCustomer(null); // Reset editCustomer state
