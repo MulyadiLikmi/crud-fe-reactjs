@@ -3,8 +3,7 @@ import { AppBar, Tabs, Tab, Button, Box, Dialog, DialogTitle, DialogContent, Dia
 import TabPanel from './components/TabPanel';
 import CustomerTable from './components/CustomerTable';
 import CustomerForm from './components/CustomerForm';
-import * as expressService from './services/expressService';
-import * as nestService from './services/nestService';
+import * as apiService from './services/apiService';
 import "./App.css";
 
 function App() {
@@ -25,12 +24,9 @@ function App() {
   const fetchCustomers = async () => {
     try {
       const baseUrl = value === 0 ? expressBaseUrl : nestBaseUrl;
-      const response =
-        value === 0
-          ? await expressService.getCustomers(baseUrl)
-          : await nestService.getCustomers(baseUrl);
+      const response = await apiService.getCustomers(baseUrl)
       setCustomers(response.data);
-      console.log(response.data); // Correct results from API call
+      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -48,11 +44,7 @@ function App() {
   const handleDelete = async (id) => {
     try {
       const baseUrl = value === 0 ? expressBaseUrl : nestBaseUrl;
-      if (value === 0) {
-        await expressService.deleteCustomer(baseUrl, id);
-      } else {
-        await nestService.deleteCustomer(baseUrl, id);
-      }
+      await apiService.deleteCustomer(baseUrl, id);
       fetchCustomers();
     } catch (error) {
       console.error(error);
@@ -63,17 +55,9 @@ function App() {
     try {
       const baseUrl = value === 0 ? expressBaseUrl : nestBaseUrl;
       if (editCustomer) {
-        if (value === 0) {
-          await expressService.updateCustomer(baseUrl, editCustomer.no, values);
-        } else {
-          await nestService.updateCustomer(baseUrl, editCustomer.no, values);
-        }
+        await apiService.updateCustomer(baseUrl, editCustomer.no, values);
       } else {
-        if (value === 0) {
-          await expressService.addCustomer(baseUrl, values);
-        } else {
-          await nestService.addCustomer(baseUrl, values);
-        }
+        await apiService.addCustomer(baseUrl, values);
       }
       setShowForm(false);
       setEditCustomer(null);
