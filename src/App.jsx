@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Tabs, Tab, Button, Box, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { AppBar, Tabs, Tab, Button, Box, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import TabPanel from './components/TabPanel';
 import CustomerTable from './components/CustomerTable';
 import CustomerForm from './components/CustomerForm';
@@ -9,8 +9,10 @@ import "./App.css";
 function App() {
   const [value, setValue] = useState(0);
   const [customers, setCustomers] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [editCustomer, setEditCustomer] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const expressBaseUrl = import.meta.env.VITE_URL_EXPRESS;
   const nestBaseUrl = import.meta.env.VITE_URL_NEST;
@@ -19,14 +21,15 @@ function App() {
     setValue(newValue);
     setEditCustomer(null);
     setShowForm(false);
+    setSearchTerm(''); // Clear the search term when switching tabs
   };
 
   const fetchCustomers = async () => {
     try {
       const baseUrl = value === 0 ? expressBaseUrl : nestBaseUrl;
-      const response = await apiService.getCustomers(baseUrl)
+      const response = await apiService.getCustomers(baseUrl);
       setCustomers(response.data);
-      console.log(response.data);
+      setFilteredCustomers(response.data); // Initially, show all customers
     } catch (error) {
       console.error(error);
     }
@@ -35,6 +38,21 @@ function App() {
   useEffect(() => {
     fetchCustomers();
   }, [value]);
+
+  // Filter customers based on search term
+  useEffect(() => {
+    if (searchTerm === '') {
+      setFilteredCustomers(customers); // Show all customers if search term is empty
+    } else {
+      setFilteredCustomers(
+        customers.filter((customer) =>
+          customer.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.alamat.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          customer.kota.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    }
+  }, [searchTerm, customers]);
 
   const handleEdit = (customer) => {
     setEditCustomer(customer);
@@ -69,7 +87,7 @@ function App() {
 
   const handleCloseForm = () => {
     setShowForm(false);
-    setEditCustomer(null); // Reset editCustomer state
+    setEditCustomer(null);
   };
 
   return (
@@ -81,12 +99,26 @@ function App() {
           <Tab label="NestJS" />
         </Tabs>
       </AppBar>
+
+      {/* Search Bar */}
+      <Box m={2}>
+        <TextField
+          label="Search by Name, Address, or City"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          fullWidth
+        />
+      </Box>
+
+      {/* Customer Table (filtered based on search term) */}
       <TabPanel value={value} index={0}>
-        <CustomerTable customers={customers} onEdit={handleEdit} onDelete={handleDelete} />
+        <CustomerTable customers={filteredCustomers} onEdit={handleEdit} onDelete={handleDelete} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CustomerTable customers={customers} onEdit={handleEdit} onDelete={handleDelete} />
+        <CustomerTable customers={filteredCustomers} onEdit={handleEdit} onDelete={handleDelete} />
       </TabPanel>
+
       {/* Dialog for the form */}
       <Dialog open={showForm} onClose={handleCloseForm}>
         <DialogTitle>{editCustomer ? 'Edit Customer' : 'Add Customer'}</DialogTitle>
@@ -99,6 +131,7 @@ function App() {
           </Button>
         </DialogActions>
       </Dialog>
+      
       <Box m={2}>
         <Button variant="contained" color="primary" onClick={() => setShowForm(true)}>
           Add Customer
